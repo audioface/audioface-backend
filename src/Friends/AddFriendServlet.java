@@ -43,7 +43,7 @@ public class AddFriendServlet extends HttpServlet {
         	friend2 = (String) session.getAttribute("friend2Userid");
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection("jdbc:mysql://localhost/Audioface?user=root&password=<PASSWORD>");
-            ps = conn.prepareStatement("INSERT INTO friendship(adder,added) VALUES(?,?)");
+            ps = conn.prepareStatement("INSERT INTO friendship(friend1,friend2) VALUES(?,?)");
             ps.setString(1, friend1); // set first variable in prepared statement
             ps.setString(2, friend2);
             ps.executeUpdate();
