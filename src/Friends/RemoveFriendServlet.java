@@ -14,24 +14,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-/**
- * Servlet implementation class RemoveFriendServlet
- */
+
 @WebServlet("/RemoveFriendServlet")
 public class RemoveFriendServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+     
     public RemoveFriendServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		String friend1 = "";
@@ -39,14 +30,18 @@ public class RemoveFriendServlet extends HttpServlet {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-        	friend1 = (String) session.getAttribute("friend1Userid");
-        	friend2 = (String) session.getAttribute("friend2Userid");
+        	System.out.println("Trying to remove friends...");
+        	friend1 = (String) request.getParameter("friend1Userid");
+        	friend2 = (String) request.getParameter("friend2Userid");
+        	System.out.println(friend1 + " " + friend2);
+        	
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/Audioface?user=root&password=<PASSWORD>");
-            ps = conn.prepareStatement("DELETE FROM friendship(friend1,friend2) VALUES(?,?)");
+            conn = DriverManager.getConnection(AddFriendServlet.DB_URL + "?user=" + AddFriendServlet.USER + "&password=" + AddFriendServlet.PASS + "&serverTimezone=UTC");
+            ps = conn.prepareStatement("DELETE FROM friendship WHERE friend1=? AND friend2=?");
             ps.setString(1, friend1); // set first variable in prepared statement
             ps.setString(2, friend2);
             ps.executeUpdate();
+            System.out.println("Successfully removed friends!");
         }
         catch (SQLException sqle) {
             System.out.println ("before sqle: "+ sqle.getMessage());
@@ -62,7 +57,6 @@ public class RemoveFriendServlet extends HttpServlet {
                 if (conn != null) {
                     conn.close();
                 }
-                System.out.print("hello");
             } 
             catch (SQLException sqle) {
                 System.out.println("sqle: "+sqle.getMessage());
@@ -70,11 +64,7 @@ public class RemoveFriendServlet extends HttpServlet {
         }
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 
